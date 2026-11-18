@@ -1,0 +1,22 @@
+<div class="grid">
+<div class="card result {{ result.band }}"><h3>{{ result.band_label }}: {{ result.label }}</h3>
+<svg class="gauge" viewBox="0 0 200 126" role="img" aria-label="Risk gauge {{ result.probability }} percent">
+{% for s in result.gauge.segs %}<path d="{{ s.d }}" fill="none" stroke="{{ s.color }}" stroke-width="16"/>{% endfor %}
+<line x1="100" y1="100" x2="{{ result.gauge.nx }}" y2="{{ result.gauge.ny }}" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
+<circle cx="100" cy="100" r="6" fill="var(--ink)"/>
+<text x="14" y="120" class="gt">0</text><text x="186" y="120" class="gt" text-anchor="end">100%</text>
+<text x="100" y="122" text-anchor="middle" class="gp">{{ result.probability }}%</text></svg>
+<p class="note">Estimated probability from the {{ report.selected }} model (test accuracy {{ (report.metrics.accuracy*100)|round(1) }}%, recall {{ (report.metrics.recall*100)|round(1) }}%). A statistical estimate, not a diagnosis.</p></div>
+<div class="card"><h3>Your values vs typical range</h3>
+{% for r in result.charts %}<div class="rr"><div class="rl"><span>{{ r.label }}</span><b class="{{ r.status }}">{{ r.value }} {{ r.unit }}</b></div>
+<div class="track"><i class="band" style="left:{{ r.left }}%;width:{{ r.width }}%"></i><i class="dot {{ r.status }}" style="left:{{ r.pos }}%"></i></div>
+<div class="note">Typical {{ r.lo }}–{{ r.hi }} {{ r.unit }}{% if r.status!='normal' %} · <b class="{{ r.status }}">{{ r.status }}</b>{% endif %}</div></div>
+{% else %}<p class="note">No measurements were entered that have a reference range.</p>{% endfor %}
+<p class="note">{{ result.chart_note }}</p></div></div>
+<div class="card"><h3>What to do next</h3>
+{% if result.advice.show_urgent %}<div class="urgent"><b>Urgent warning signs.</b> {{ result.advice.urgent }}</div>{% endif %}
+<div class="cols"><div><h4>Next steps</h4><ul>{% for t in result.advice.next %}<li>{{ t }}</li>{% endfor %}</ul>
+{% if result.advice.tips %}<h4>About your values</h4><ul>{% for t in result.advice.tips %}<li>{{ t }}</li>{% endfor %}</ul>{% endif %}</div>
+<div><h4>Lifestyle tips for people with diabetes</h4><ul>{% for t in result.advice.lifestyle %}<li>{{ t }}</li>{% endfor %}</ul></div></div>
+<p class="note">General information only. Targets differ from person to person: follow your own doctor's advice.</p></div>
+<p class="no-print"><button class="btn ghost" onclick="window.print()">Print / save as PDF</button></p>

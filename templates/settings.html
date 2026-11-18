@@ -1,0 +1,20 @@
+{% extends "base.html" %}{% block title %}Settings · DiaComplication AI{% endblock %}{% block body %}
+<div class="crumb"><a href="/">Home</a> / Settings</div>
+<section class="hero"><h1>Settings</h1><p>Personalise how the website looks. Preferences are saved in this browser only.</p></section>
+<div class="card"><h3>Appearance</h3>
+<div class="setrow"><div><h4>Colour mode</h4><p>Light, dark, or follow your device.</p></div>
+<div class="seg"><button data-pref="mode" data-val="light">☀ Light</button><button data-pref="mode" data-val="dark">☾ Dark</button><button data-pref="mode" data-val="system">⌘ System</button></div></div>
+<div class="setrow"><div><h4>Accent colour</h4><p>Used for buttons, links, charts and highlights.</p></div>
+<div class="swatches">{% for k,c,n in (('violet','#7c3aed','Violet'),('blue','#2563eb','Blue'),('emerald','#059669','Emerald'),('rose','#e11d48','Rose')) %}<button class="sw" data-pref="accent" data-val="{{ k }}"><i style="background:{{ c }}"></i>{{ n }}</button>{% endfor %}</div></div>
+<div class="setrow"><div><h4>Text size</h4><p>Make everything a little larger for easier reading.</p></div>
+<div class="seg"><button data-pref="size" data-val="default">Default</button><button data-pref="size" data-val="large">Large</button></div></div></div>
+<div class="card" style="margin-top:18px"><h3>Data</h3>
+<div class="setrow"><div><h4>Prediction history</h4><p>{{ count }} record{{ '' if count==1 else 's' }} saved in <code>history.db</code> on this computer.</p></div>
+<div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn ghost sm" href="/history/export.csv">Export CSV</a>
+<form method="post" action="/history/clear"><button class="btn ghost sm" style="color:var(--coral);border-color:var(--coral)" onclick="return confirm('Delete ALL history?')">Clear all history</button></form></div></div></div>
+<div class="card" style="margin-top:18px"><h3>About</h3>
+<div class="kv"><span>Project</span><b>Heart, Kidney and Eye complication prediction</b></div>
+<div class="kv"><span>Models</span><b>scikit-learn, selected by 5-fold cross-validation</b></div>
+<div class="kv"><span>Datasets</span><b>UCI Heart Disease · Chronic Kidney Disease · Diabetic Retinopathy (Debrecen)</b></div>
+<p class="note" style="margin-top:12px">Results are statistical estimates, not a diagnosis. Always consult a qualified doctor.</p></div>
+{% endblock %}

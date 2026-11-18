@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block title %}Record {{ row.id }}{% endblock %}{% block body %}
+<section class="pagehead"><h1>{{ cfg.title }}: record #{{ row.id }}</h1>
+<p>{{ row.created_at }}{% if row.patient %} · {{ row.patient }}{% endif %} · <a href="/history">← back to history</a></p></section>
+{% include "_result.html" %}{% endblock %}

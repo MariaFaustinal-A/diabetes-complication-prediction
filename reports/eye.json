@@ -1,0 +1,212 @@
+{
+  "key": "eye",
+  "title": "Diabetic Retinopathy (Eye)",
+  "acquisition": {
+    "source": "UCI Diabetic Retinopathy Debrecen (Messidor image features)",
+    "rows": 1151,
+    "features": 19,
+    "positives": 611,
+    "negatives": 540,
+    "sites": null,
+    "missing_pct": {},
+    "missing_cells_pct": 0.0
+  },
+  "preparation": [
+    "Image-derived features of the Messidor retinal dataset (microaneurysm counts at 6 confidence levels, 8 exudate measures, optic-disc geometry, image quality and pre-screening flags).",
+    "Target 'Class' kept as binary: 1 = signs of diabetic retinopathy, 0 = none. No missing values.",
+    "Removed 5 duplicate record(s); 1146 rows remain.",
+    "Missing numeric values -> median; missing categorical values -> most frequent value (no 'missing' flag is kept, so a blank form field cannot act as a signal of its own).",
+    "Numeric features standardised (z-score); categorical features one-hot encoded. All fitted inside a scikit-learn Pipeline on the training data only, so no test-set leakage.",
+    "Stratified 80/20 train/test split (seed 42)."
+  ],
+  "split": {
+    "train": 916,
+    "test": 230
+  },
+  "selection": [
+    {
+      "model": "Logistic Regression",
+      "params": {
+        "C": 10
+      },
+      "roc_auc": 0.8214,
+      "accuracy": 0.7435,
+      "f1": 0.7346,
+      "recall": 0.6734,
+      "roc_auc_std": 0.0158,
+      "selected": true
+    },
+    {
+      "model": "Support Vector Machine",
+      "params": {
+        "C": 5
+      },
+      "roc_auc": 0.7957,
+      "accuracy": 0.7238,
+      "f1": 0.7123,
+      "recall": 0.6488,
+      "roc_auc_std": 0.0131,
+      "selected": false
+    },
+    {
+      "model": "Random Forest",
+      "params": {
+        "max_depth": null,
+        "n_estimators": 200
+      },
+      "roc_auc": 0.7589,
+      "accuracy": 0.6976,
+      "f1": 0.7046,
+      "recall": 0.6819,
+      "roc_auc_std": 0.0221,
+      "selected": false
+    },
+    {
+      "model": "Gradient Boosting",
+      "params": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "n_estimators": 200
+      },
+      "roc_auc": 0.7508,
+      "accuracy": 0.69,
+      "f1": 0.6948,
+      "recall": 0.6674,
+      "roc_auc_std": 0.0127,
+      "selected": false
+    },
+    {
+      "model": "K-Nearest Neighbours",
+      "params": {
+        "n_neighbors": 15
+      },
+      "roc_auc": 0.6967,
+      "accuracy": 0.6299,
+      "f1": 0.6305,
+      "recall": 0.5992,
+      "roc_auc_std": 0.0149,
+      "selected": false
+    },
+    {
+      "model": "Decision Tree",
+      "params": {
+        "max_depth": 5
+      },
+      "roc_auc": 0.6654,
+      "accuracy": 0.6376,
+      "f1": 0.6001,
+      "recall": 0.5247,
+      "roc_auc_std": 0.0284,
+      "selected": false
+    }
+  ],
+  "selected": "Logistic Regression",
+  "metrics": {
+    "accuracy": 0.7435,
+    "precision": 0.8462,
+    "recall": 0.6311,
+    "specificity": 0.8704,
+    "f1": 0.723,
+    "roc_auc": 0.8451
+  },
+  "confusion": {
+    "tn": 94,
+    "fp": 14,
+    "fn": 45,
+    "tp": 77
+  },
+  "importance": {
+    "ma05": 0.4005,
+    "ma07": 0.1951,
+    "ma08": 0.1711,
+    "ma09": 0.1137,
+    "ma06": 0.0995,
+    "ma10": 0.091,
+    "ex7": 0.0554,
+    "ex1": 0.043,
+    "ex4": 0.0316,
+    "ex5": 0.026
+  },
+  "examples": {
+    "positive": {
+      "quality": "1",
+      "prescreen": "1",
+      "ma05": "81",
+      "ma06": "78",
+      "ma07": "74",
+      "ma08": "66",
+      "ma09": "60",
+      "ma10": "39",
+      "ex1": "26.8197",
+      "ex2": "11.9033",
+      "ex3": "1.97027",
+      "ex4": "0.371255",
+      "ex5": "0.024648",
+      "ex6": "0",
+      "ex7": "0",
+      "ex8": "0",
+      "macula_od": "0.501801",
+      "od_diam": "0.115536",
+      "ammfm": "0"
+    },
+    "negative": {
+      "quality": "1",
+      "prescreen": "1",
+      "ma05": "27",
+      "ma06": "26",
+      "ma07": "26",
+      "ma08": "25",
+      "ma09": "23",
+      "ma10": "16",
+      "ex1": "17.5625",
+      "ex2": "10.5631",
+      "ex3": "0.414059",
+      "ex4": "0.124827",
+      "ex5": "0",
+      "ex6": "0",
+      "ex7": "0",
+      "ex8": "0",
+      "macula_od": "0.5286",
+      "od_diam": "0.106559",
+      "ammfm": "0"
+    }
+  },
+  "healthy_ranges": {
+    "ma05": [
+      14.0,
+      48.0,
+      3.0,
+      103.0
+    ],
+    "ma07": [
+      13.0,
+      47.0,
+      3.0,
+      88.85000000000002
+    ],
+    "ma08": [
+      12.0,
+      44.0,
+      2.0,
+      81.0
+    ],
+    "ex7": [
+      0.0,
+      0.0029570000000000004,
+      0.0,
+      1.8309845000000033
+    ],
+    "ex1": [
+      25.28337175,
+      82.18845075,
+      3.95094225,
+      255.99788930000005
+    ],
+    "ex4": [
+      0.08403025,
+      1.75070325,
+      0.0,
+      15.791855700000012
+    ]
+  }
+}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}{% block title %}{{ cfg.title }} · DiaComplication AI{% endblock %}{% block body %}
+<div class="crumb"><a href="/">Home</a> / {{ cfg.title }}</div>
+<section class="hero"><h1>{{ cfg.title }} risk check</h1><p>{{ cfg.blurb }}</p></section>
+{% if result %}{% include "_result.html" %}<p class="note" style="margin:14px 0 26px">Saved to history (record #{{ rid }}). <a href="/history">Open history</a></p>{% endif %}
+{% if errors %}<div class="errors">{% for e in errors %}<div>{{ e }}</div>{% endfor %}</div>{% endif %}
+<div class="split"><form method="post" action="{{ url_for('predict_risk', key=key) }}" class="card" id="f">
+<div class="tabs" style="margin-top:0"><button type="button" class="btn ghost sm" data-ex="positive">Fill example: disease case</button><button type="button" class="btn ghost sm" data-ex="negative">Fill example: healthy case</button></div>
+<div class="fsec">Patient</div><div class="fields"><label>Patient name / ID <small>(optional, saved in history)</small><input type="text" name="_patient" maxlength="80" value="{{ values.get('_patient','') }}"></label></div>
+{% for title, items in (("Key measurements (required)", cfg.fields|selectattr('required')|list), ("Additional measurements (optional)", cfg.fields|rejectattr('required')|list)) %}{% if items %}
+<div class="fsec">{{ title }}</div><div class="fields">
+{% for f in items %}<label>{{ f.label }}{% if f.required %} <span class="req">*</span>{% endif %}{% if f.unit %} <small>({{ f.unit }})</small>{% endif %}
+{% if f.kind=='num' %}<input type="number" name="{{ f.name }}" step="{{ f.step }}" {% if f.min is not none %}min="{{ f.min }}" max="{{ f.max }}" placeholder="{{ f.min }} – {{ f.max }}"{% endif %} value="{{ values.get(f.name,'') }}" {{ 'required' if f.required }}>
+{% else %}<select name="{{ f.name }}" {{ 'required' if f.required }}><option value="">{{ 'Select…' if f.required else 'Not known' }}</option>
+{% for v,t in f.options %}<option value="{{ v }}" {{ 'selected' if values.get(f.name)==v }}>{{ t }}</option>{% endfor %}</select>{% endif %}</label>{% endfor %}</div>{% endif %}{% endfor %}
+<p style="margin:26px 0 0;display:flex;gap:10px"><button class="btn" type="submit" id="go">Predict risk</button><a class="btn ghost" href="/predict/{{ key }}">Reset</a></p></form>
+<aside class="aside"><div class="card"><h3>About this model</h3>
+<div class="kv"><span>Algorithm</span><b>{{ report.selected }}</b></div><div class="kv"><span>Trained on</span><b>{{ report.acquisition.rows }} records</b></div>
+<div class="kv"><span>Test accuracy</span><b>{{ (report.metrics.accuracy*100)|round(1) }}%</b></div><div class="kv"><span>Recall</span><b>{{ (report.metrics.recall*100)|round(1) }}%</b></div>
+<div class="kv"><span>ROC-AUC</span><b>{{ report.metrics.roc_auc }}</b></div>
+<p class="note" style="margin-top:12px">Fields marked <span class="req">*</span> are required. Leave optional fields blank if the value is unknown.</p></div></aside></div>
+<script>const EX={{ report.examples|tojson }};
+document.querySelectorAll('[data-ex]').forEach(b=>b.onclick=()=>{const v=EX[b.dataset.ex]||{};
+for(const [k,x] of Object.entries(v)){const e=document.querySelector('#f [name="'+k+'"]');if(e)e.value=x;}});
+document.getElementById('f').addEventListener('submit',()=>{const g=document.getElementById('go');setTimeout(()=>{g.disabled=true;g.textContent='Analysing…'},0)});</script>
+{% endblock %}

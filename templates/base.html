@@ -1,0 +1,21 @@
+<!doctype html><html lang="en" data-mode="light" data-accent="violet"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}DiaComplication AI{% endblock %}</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%237c3aed'/%3E%3Cpath d='M5 17h6l3-7 4 12 3-5h6' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<script>(function(){var d=document.documentElement,g=function(k,f){try{return localStorage.getItem(k)||f}catch(e){return f}},q=matchMedia('(prefers-color-scheme: dark)');
+function a(){var m=g('mode','light');if(m==='system')m=q.matches?'dark':'light';d.dataset.mode=m;d.dataset.accent=g('accent','violet');d.dataset.size=g('size','default')}
+a();window.applyPrefs=a;if(q.addEventListener)q.addEventListener('change',a)})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head><body>
+{% set p = request.path %}
+<nav><div class="wrap"><a class="brand" href="/"><span class="logo"><svg viewBox="0 0 24 24"><polyline points="2 12 7 12 10 5 14 19 17 12 22 12"/></svg></span>DiaComplication AI</a>
+<a class="l {{ 'active' if p=='/' }}" href="/">Home</a><a class="l {{ 'active' if p.startswith('/predict/heart') }}" href="/predict/heart">Heart</a>
+<a class="l {{ 'active' if p.startswith('/predict/kidney') }}" href="/predict/kidney">Kidney</a><a class="l {{ 'active' if p.startswith('/predict/eye') }}" href="/predict/eye">Eye</a>
+<a class="l {{ 'active' if p.startswith('/history') }}" href="/history">History</a><a class="l {{ 'active' if p.startswith('/settings') }}" href="/settings">Settings</a></div></nav>
+<main class="wrap">{% block body %}{% endblock %}</main>
+<footer><div class="wrap"><b>DiaComplication AI</b> · Prediction of Heart, Kidney, and Eye Complications in Diabetes Patients.<br>It is <b>not</b> a medical device and gives no diagnosis; consult a qualified doctor for any health concern.</div></footer>
+<script>document.querySelectorAll('[data-pref]').forEach(function(b){function m(){var v;try{v=localStorage.getItem(b.dataset.pref)}catch(e){}
+v=v||({mode:'light',accent:'violet',size:'default'})[b.dataset.pref];b.classList.toggle('on',v===b.dataset.val)}
+b.addEventListener('click',function(){try{localStorage.setItem(b.dataset.pref,b.dataset.val)}catch(e){}applyPrefs();document.querySelectorAll('[data-pref="'+b.dataset.pref+'"]').forEach(function(x){x.dispatchEvent(new Event('sync'))})});
+b.addEventListener('sync',m);m()});</script>
+</body></html>

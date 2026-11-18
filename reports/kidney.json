@@ -1,0 +1,192 @@
+{
+  "key": "kidney",
+  "title": "Chronic Kidney Disease",
+  "acquisition": {
+    "source": "UCI Chronic Kidney Disease: Apollo Hospitals, Tamil Nadu",
+    "rows": 400,
+    "features": 24,
+    "positives": 250,
+    "negatives": 150,
+    "sites": null,
+    "missing_pct": {
+      "rbc": 38.0,
+      "rbcc": 32.8,
+      "wbcc": 26.5,
+      "pot": 22.0,
+      "sod": 21.8,
+      "pcv": 17.8
+    },
+    "missing_cells_pct": 10.5
+  },
+  "preparation": [
+    "Parsed the ARFF manually and repaired malformed rows (stray tabs, blank fields, trailing commas).",
+    "Target 'class' converted to binary: ckd = 1, notckd = 0.",
+    "Removed 0 duplicate record(s); 400 rows remain.",
+    "Missing numeric values -> median; missing categorical values -> most frequent value (no 'missing' flag is kept, so a blank form field cannot act as a signal of its own).",
+    "Numeric features standardised (z-score); categorical features one-hot encoded. All fitted inside a scikit-learn Pipeline on the training data only, so no test-set leakage.",
+    "Stratified 80/20 train/test split (seed 42)."
+  ],
+  "split": {
+    "train": 320,
+    "test": 80
+  },
+  "selection": [
+    {
+      "model": "Logistic Regression",
+      "params": {
+        "C": 1
+      },
+      "roc_auc": 1.0,
+      "accuracy": 0.9938,
+      "f1": 0.995,
+      "recall": 0.995,
+      "roc_auc_std": 0.0,
+      "selected": true
+    },
+    {
+      "model": "Support Vector Machine",
+      "params": {
+        "C": 0.5
+      },
+      "roc_auc": 1.0,
+      "accuracy": 0.9969,
+      "f1": 0.9975,
+      "recall": 0.995,
+      "roc_auc_std": 0.0,
+      "selected": false
+    },
+    {
+      "model": "Random Forest",
+      "params": {
+        "max_depth": null,
+        "n_estimators": 400
+      },
+      "roc_auc": 0.9996,
+      "accuracy": 0.9938,
+      "f1": 0.9951,
+      "recall": 1.0,
+      "roc_auc_std": 0.0005,
+      "selected": false
+    },
+    {
+      "model": "Gradient Boosting",
+      "params": {
+        "learning_rate": 0.1,
+        "max_depth": 2,
+        "n_estimators": 200
+      },
+      "roc_auc": 0.9994,
+      "accuracy": 0.9875,
+      "f1": 0.9901,
+      "recall": 0.995,
+      "roc_auc_std": 0.0008,
+      "selected": false
+    },
+    {
+      "model": "K-Nearest Neighbours",
+      "params": {
+        "n_neighbors": 9
+      },
+      "roc_auc": 0.9985,
+      "accuracy": 0.9625,
+      "f1": 0.9688,
+      "recall": 0.94,
+      "roc_auc_std": 0.0029,
+      "selected": false
+    },
+    {
+      "model": "Decision Tree",
+      "params": {
+        "max_depth": 3
+      },
+      "roc_auc": 0.9672,
+      "accuracy": 0.9688,
+      "f1": 0.9755,
+      "recall": 0.985,
+      "roc_auc_std": 0.0288,
+      "selected": false
+    }
+  ],
+  "selected": "Logistic Regression",
+  "metrics": {
+    "accuracy": 0.9875,
+    "precision": 1.0,
+    "recall": 0.98,
+    "specificity": 1.0,
+    "f1": 0.9899,
+    "roc_auc": 1.0
+  },
+  "confusion": {
+    "tn": 30,
+    "fp": 0,
+    "fn": 1,
+    "tp": 49
+  },
+  "importance": {
+    "sg": 0.026,
+    "hemo": 0.0077,
+    "al": 0.0058,
+    "pot": 0.005,
+    "pcv": 0.0042,
+    "su": 0.001,
+    "htn": 0.0009,
+    "sc": 0.0008,
+    "dm": 0.0007,
+    "rbcc": 0.0007
+  },
+  "examples": {
+    "positive": {
+      "age": "65",
+      "bp": "90",
+      "sc": "13.5",
+      "hemo": "8.8",
+      "bu": "82",
+      "bgr": "172",
+      "sod": "145",
+      "pot": "6.3",
+      "pcv": "31",
+      "wbcc": "",
+      "rbcc": "",
+      "sg": "1.010",
+      "al": "4",
+      "su": "2",
+      "rbc": "normal",
+      "pc": "normal",
+      "pcc": "notpresent",
+      "ba": "notpresent",
+      "htn": "yes",
+      "dm": "yes",
+      "cad": "no",
+      "appet": "good",
+      "pe": "yes",
+      "ane": "yes"
+    },
+    "negative": {
+      "age": "44",
+      "bp": "60",
+      "sc": "0.5",
+      "hemo": "15",
+      "bu": "46",
+      "bgr": "95",
+      "sod": "138",
+      "pot": "4.2",
+      "pcv": "50",
+      "wbcc": "7700",
+      "rbcc": "6.3",
+      "sg": "1.020",
+      "al": "0",
+      "su": "0",
+      "rbc": "normal",
+      "pc": "normal",
+      "pcc": "notpresent",
+      "ba": "notpresent",
+      "htn": "no",
+      "dm": "no",
+      "cad": "no",
+      "appet": "good",
+      "pe": "no",
+      "ane": "no"
+    }
+  },
+  "healthy_ranges": {}
+}

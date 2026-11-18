@@ -1,0 +1,176 @@
+{
+  "key": "heart",
+  "title": "Heart Disease",
+  "acquisition": {
+    "source": "UCI Heart Disease: Cleveland, Hungarian, Switzerland, VA Long Beach",
+    "rows": 920,
+    "features": 13,
+    "positives": 509,
+    "negatives": 411,
+    "sites": {
+      "cleveland": 303,
+      "hungarian": 294,
+      "va": 200,
+      "switzerland": 123
+    },
+    "missing_pct": {
+      "ca": 66.4,
+      "thal": 52.8,
+      "slope": 33.6,
+      "fbs": 9.8,
+      "oldpeak": 6.7,
+      "trestbps": 6.4
+    },
+    "missing_cells_pct": 14.7
+  },
+  "preparation": [
+    "Merged the 4 hospital files (Cleveland, Hungarian, Switzerland, VA) into one table of 920 patients.",
+    "Target 'num' (0-4 vessel narrowing) converted to binary: 0 = no disease, 1-4 = disease.",
+    "173 impossible zero readings of cholesterol / blood pressure treated as missing.",
+    "Removed 2 duplicate record(s); 918 rows remain.",
+    "Missing numeric values -> median; missing categorical values -> most frequent value (no 'missing' flag is kept, so a blank form field cannot act as a signal of its own).",
+    "Numeric features standardised (z-score); categorical features one-hot encoded. All fitted inside a scikit-learn Pipeline on the training data only, so no test-set leakage.",
+    "Stratified 80/20 train/test split (seed 42)."
+  ],
+  "split": {
+    "train": 734,
+    "test": 184
+  },
+  "selection": [
+    {
+      "model": "Random Forest",
+      "params": {
+        "max_depth": 6,
+        "n_estimators": 200
+      },
+      "roc_auc": 0.8782,
+      "accuracy": 0.8174,
+      "f1": 0.8408,
+      "recall": 0.8671,
+      "roc_auc_std": 0.0464,
+      "selected": true
+    },
+    {
+      "model": "Logistic Regression",
+      "params": {
+        "C": 0.1
+      },
+      "roc_auc": 0.8755,
+      "accuracy": 0.7984,
+      "f1": 0.8219,
+      "recall": 0.8374,
+      "roc_auc_std": 0.0452,
+      "selected": false
+    },
+    {
+      "model": "Support Vector Machine",
+      "params": {
+        "C": 0.5
+      },
+      "roc_auc": 0.8755,
+      "accuracy": 0.812,
+      "f1": 0.8396,
+      "recall": 0.8842,
+      "roc_auc_std": 0.0496,
+      "selected": false
+    },
+    {
+      "model": "Gradient Boosting",
+      "params": {
+        "learning_rate": 0.05,
+        "max_depth": 2,
+        "n_estimators": 100
+      },
+      "roc_auc": 0.871,
+      "accuracy": 0.8025,
+      "f1": 0.8271,
+      "recall": 0.8521,
+      "roc_auc_std": 0.0434,
+      "selected": false
+    },
+    {
+      "model": "K-Nearest Neighbours",
+      "params": {
+        "n_neighbors": 15
+      },
+      "roc_auc": 0.8677,
+      "accuracy": 0.8106,
+      "f1": 0.8342,
+      "recall": 0.8547,
+      "roc_auc_std": 0.0488,
+      "selected": false
+    },
+    {
+      "model": "Decision Tree",
+      "params": {
+        "max_depth": 3
+      },
+      "roc_auc": 0.8001,
+      "accuracy": 0.7439,
+      "f1": 0.7846,
+      "recall": 0.8374,
+      "roc_auc_std": 0.0622,
+      "selected": false
+    }
+  ],
+  "selected": "Random Forest",
+  "metrics": {
+    "accuracy": 0.7989,
+    "precision": 0.8037,
+    "recall": 0.8431,
+    "specificity": 0.7439,
+    "f1": 0.823,
+    "roc_auc": 0.9029
+  },
+  "confusion": {
+    "tn": 61,
+    "fp": 21,
+    "fn": 16,
+    "tp": 86
+  },
+  "importance": {
+    "cp": 0.082,
+    "exang": 0.028,
+    "sex": 0.0173,
+    "oldpeak": 0.0166,
+    "thal": 0.0069,
+    "thalach": 0.0049,
+    "age": 0.0043,
+    "chol": 0.004,
+    "ca": 0.0039,
+    "trestbps": 0.0018
+  },
+  "examples": {
+    "positive": {
+      "age": "49",
+      "sex": "1",
+      "cp": "4",
+      "trestbps": "130",
+      "chol": "206",
+      "thalach": "170",
+      "oldpeak": "0",
+      "fbs": "0",
+      "restecg": "0",
+      "exang": "0",
+      "slope": "",
+      "ca": "",
+      "thal": ""
+    },
+    "negative": {
+      "age": "59",
+      "sex": "1",
+      "cp": "3",
+      "trestbps": "180",
+      "chol": "213",
+      "thalach": "100",
+      "oldpeak": "0",
+      "fbs": "0",
+      "restecg": "0",
+      "exang": "0",
+      "slope": "",
+      "ca": "",
+      "thal": ""
+    }
+  },
+  "healthy_ranges": {}
+}

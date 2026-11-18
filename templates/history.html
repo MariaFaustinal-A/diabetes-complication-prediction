@@ -1,0 +1,26 @@
+{% extends "base.html" %}{% block title %}History{% endblock %}{% block body %}
+<section class="pagehead"><h1>Prediction history</h1>
+<p>Every prediction is saved in <code>history.db</code> on this computer only.</p></section>
+<div class="statstrip"><div class="sb"><b>{{ st.total }}</b><span>checks shown</span></div><div class="sb"><b>{{ st.high }}</b><span>high-risk</span></div>
+<div class="sb"><b>{{ st.avg }}%</b><span>average risk</span></div>
+<div class="sb"><b>{% for k,d in datasets.items() %}{{ st.by[k] }}{{ ' / ' if not loop.last }}{% endfor %}</b><span>heart / kidney / eye</span></div></div>
+{% if chart %}<div class="card"><h3>Risk over time</h3>
+<svg class="trend" viewBox="0 0 {{ chart.W }} {{ chart.H }}">
+{% for g in chart.grid %}<line x1="{{ chart.L }}" x2="{{ chart.W - chart.R }}" y1="{{ g.y }}" y2="{{ g.y }}" stroke="var(--line)"{% if g.v in (30,60) %} stroke-dasharray="4"{% endif %}/><text x="2" y="{{ g.y + 3 }}">{{ g.v }}%</text>{% endfor %}
+{% for l in chart.lines %}<polyline points="{{ l.poly }}" fill="none" stroke="{{ l.color }}" stroke-width="2.2"/>
+{% for x,y,t in l.pts %}<circle cx="{{ x }}" cy="{{ y }}" r="4.5" fill="{{ l.color }}" stroke="var(--card)" stroke-width="1.5"><title>{{ t }}</title></circle>{% endfor %}{% endfor %}</svg>
+<div class="legend">{% for l in chart.lines %}<span><i style="background:{{ l.color }}"></i>{{ datasets[l.key].short }}</span>{% endfor %}<span>Oldest → newest. Dashed lines mark 30% and 60%.</span></div></div>{% endif %}
+<div class="tabs"><a class="btn {{ '' if not current else 'ghost' }}" href="/history{{ '?patient=' ~ patient if patient }}">All</a>
+{% for k,d in datasets.items() %}<a class="btn {{ '' if current==k else 'ghost' }}" href="/history?disease={{ k }}{{ '&patient=' ~ patient if patient }}">{{ d.short }}</a>{% endfor %}
+<a class="btn ghost" href="/history/export.csv?disease={{ current or '' }}&patient={{ patient }}">⬇ Export CSV</a></div>
+<form class="search" method="get" action="/history">{% if current %}<input type="hidden" name="disease" value="{{ current }}">{% endif %}
+<input type="search" name="patient" placeholder="Search patient name / ID" value="{{ patient }}"><button class="btn" type="submit">Search</button>
+{% if patient %}<a class="btn ghost" href="/history{{ '?disease=' ~ current if current }}">Clear</a>{% endif %}</form>
+<div class="card scroll">{% if rows %}<table><tr><th>#</th><th>When</th><th>Patient</th><th>Check</th><th>Risk</th><th></th></tr>
+{% for r in rows %}<tr><td>{{ r.id }}</td><td>{{ r.created_at }}</td><td>{{ r.patient or '—' }}</td><td>{{ datasets[r.disease].short }}</td>
+<td style="min-width:150px"><div class="mini {{ r.band }}"><i style="width:{{ r.probability }}%"></i></div>{{ r.probability }}% <span class="chip {{ r.band }}">{{ r.band }}</span></td>
+<td style="white-space:nowrap"><a href="/history/{{ r.id }}">View</a>
+<form method="post" action="/history/{{ r.id }}/delete" style="display:inline"><button class="lnk" onclick="return confirm('Delete record {{ r.id }}?')">Delete</button></form></td></tr>{% endfor %}</table>
+<form method="post" action="/history/clear" style="margin-top:16px"><button class="btn ghost" onclick="return confirm('Delete ALL history?')">Clear all history</button></form>
+{% else %}<p>No matching predictions. Run a <a href="/predict/heart">heart</a>, <a href="/predict/kidney">kidney</a> or <a href="/predict/eye">eye</a> check.</p>{% endif %}</div>
+{% endblock %}

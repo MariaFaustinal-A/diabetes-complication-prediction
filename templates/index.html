@@ -1,0 +1,28 @@
+{% extends "base.html" %}{% block body %}
+<section class="hero2"><div><span class="eyebrow">AI-assisted screening</span>
+<h1>Prediction of Heart, Kidney, and Eye Complications in Diabetes Patients</h1>
+<p>Enter a few clinical measurements and get an instant risk estimate, charts of your values against typical ranges, and practical next steps. Each model is tuned by cross-validation and verified on unseen patients.</p>
+<div class="cta"><a class="btn" href="/predict/heart">Start a screening</a><a class="btn ghost" href="/history">View history</a></div></div>
+<div class="card"><svg class="ecg" viewBox="0 0 1000 70" preserveAspectRatio="none"><path d="M0 40H180l15-10 15 10h60l12 6 14-38 16 58 12-26h120l15-10 15 10h80l12 6 14-38 16 58 12-26h140l15-10 15 10h80"/></svg>
+<h4 style="margin-top:0">Model accuracy on unseen patients</h4>
+{% for k,d in datasets.items() %}<div class="mrow"><span>{{ d.short }}</span><div class="meter"><i style="width:{{ reports[k].metrics.accuracy*100 }}%"></i></div><b>{{ (reports[k].metrics.accuracy*100)|round(1) }}%</b></div>{% endfor %}</div></section>
+<div class="sec"><h2>Choose a screening</h2><p>Three independent models, one for each complication.</p></div>
+<div class="grid">
+{% for k,d in datasets.items() %}{% set r=reports[k] %}
+<div class="card"><div class="icon"><svg viewBox="0 0 24 24">{% if k=='heart' %}<path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z"/>{% elif k=='kidney' %}<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>{% else %}<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>{% endif %}</svg></div>
+<h3>{{ d.title }}</h3><p class="note">{{ d.blurb }}</p>
+<div class="stat"><div><b>{{ r.acquisition.rows }}</b><span>records</span></div><div><b>{{ (r.metrics.accuracy*100)|round(1) }}%</b><span>accuracy</span></div><div><b>{{ r.metrics.roc_auc }}</b><span>ROC-AUC</span></div></div>
+<p class="note">Best model: {{ r.selected }}</p><a class="btn" href="/predict/{{ k }}">Start {{ d.short|lower }} check →</a></div>
+{% endfor %}</div>
+<div class="sec"><h2>How it works</h2></div>
+<div class="grid steps">
+<div class="card"><div class="n">1</div><h3>Enter measurements</h3><p class="note">Fill in lab values and clinical details. Optional fields can be left blank.</p></div>
+<div class="card"><div class="n">2</div><h3>Get a risk estimate</h3><p class="note">The trained model returns a probability, shown on a gauge with a low, moderate or high band.</p></div>
+<div class="card"><div class="n">3</div><h3>Review and act</h3><p class="note">See your values against typical ranges, lifestyle tips and next steps, then track results over time.</p></div></div>
+<div class="sec"><h2>Your activity</h2></div>
+<div class="statstrip">
+<div class="sb"><b>{{ st.total }}</b><span>checks saved</span></div><div class="sb"><b>{{ st.high }}</b><span>high-risk results</span></div>
+<div class="sb"><b>{{ st.avg }}%</b><span>average risk</span></div>
+<div class="sb"><b>{% if st.last %}{{ datasets[st.last.disease].short }} · {{ st.last.probability }}%{% else %}—{% endif %}</b><span>latest check</span></div></div>
+<p class="note">The three models are trained on three separate public clinical datasets (UCI), which cover general patient populations rather than diabetics only, and each is evaluated independently.</p>
+{% endblock %}
